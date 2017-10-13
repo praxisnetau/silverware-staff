@@ -1,0 +1,11 @@
+---
+Name: silverware-staff
+---
+
+# Configure Admin Requirements:
+
+SilverStripe\Admin\LeftAndMain:
+  extra_requirements_css:
+    - "silverware/staff: admin/client/dist/styles/bundle.css"
+  extra_requirements_javascript:
+    - "silverware/staff: admin/client/dist/js/bundle.js"

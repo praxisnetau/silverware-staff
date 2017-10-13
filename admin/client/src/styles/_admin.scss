@@ -1,0 +1,24 @@
+/* SilverWare Staff Admin Styles
+===================================================================================================================== */
+
+// Tree Styles:
+
+.cms-tree.jstree {
+  
+  .gender-male {
+    
+    > a .jstree-pageicon {
+      background-image: url('../images/icons/StaffMember-male.png');
+    }
+    
+  }
+  
+  .gender-female {
+    
+    > a .jstree-pageicon {
+      background-image: url('../images/icons/StaffMember-female.png');
+    }
+    
+  }
+  
+}
