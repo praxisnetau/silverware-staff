@@ -97,6 +97,16 @@ class StaffPage extends Page implements ListSource
     ];
     
     /**
+     * Defines the default values for the list view component.
+     *
+     * @var array
+     * @config
+     */
+    private static $list_view_defaults = [
+        'HideNoDataMessage' => 1
+    ];
+    
+    /**
      * Answers a list of members within the staff page.
      *
      * @return DataList
