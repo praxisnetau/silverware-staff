@@ -75,6 +75,14 @@ class StaffCategory extends Page implements ListSource
     private static $icon = 'silverware/staff: admin/client/dist/images/icons/StaffCategory.png';
     
     /**
+     * Defines the table name to use for this object.
+     *
+     * @var string
+     * @config
+     */
+    private static $table_name = 'SilverWare_StaffCategory';
+    
+    /**
      * Defines the default child class for this object.
      *
      * @var string
