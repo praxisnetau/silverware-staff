@@ -74,6 +74,14 @@ class StaffMember extends Page
     private static $icon = 'silverware/staff: admin/client/dist/images/icons/StaffMember.png';
     
     /**
+     * Defines the table name to use for this object.
+     *
+     * @var string
+     * @config
+     */
+    private static $table_name = 'SilverWare_StaffMember';
+    
+    /**
      * Determines whether this object can exist at the root level.
      *
      * @var boolean
