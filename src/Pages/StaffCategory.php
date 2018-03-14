@@ -39,7 +39,8 @@ class StaffCategory extends Page implements ListSource
     /**
      * Define summary constants.
      */
-    const SUMMARY_SUMMARY   = 'MetaSummary';
+    const SUMMARY_PROFILE   = 'Content';
+    const SUMMARY_SUMMARY   = 'SummaryMeta';
     const SUMMARY_EDUCATION = 'Education';
     
     /**
@@ -154,6 +155,10 @@ class StaffCategory extends Page implements ListSource
         
         $fields = parent::getCMSFields();
         
+        // Define Placeholder:
+        
+        $placeholder = _t(__CLASS__ . '.DROPDOWNDEFAULT', '(default)');
+        
         // Create Options Tab:
         
         $fields->findOrMakeTab('Root.Options', $this->fieldLabel('Options'));
@@ -171,7 +176,7 @@ class StaffCategory extends Page implements ListSource
                             'MemberSummary',
                             $this->fieldLabel('MemberSummary'),
                             $this->getMemberSummaryOptions()
-                        ),
+                        )->setEmptyString(' ')->setAttribute('data-placeholder', $placeholder),
                         CheckboxField::create(
                             'ShowContent',
                             $this->fieldLabel('ShowContent')
@@ -259,6 +264,7 @@ class StaffCategory extends Page implements ListSource
     public function getMemberSummaryOptions()
     {
         return [
+            self::SUMMARY_PROFILE => _t(__CLASS__ . '.PROFILE', 'Profile'),
             self::SUMMARY_SUMMARY => _t(__CLASS__ . '.SUMMARY', 'Summary'),
             self::SUMMARY_EDUCATION => _t(__CLASS__ . '.EDUCATION', 'Education')
         ];
