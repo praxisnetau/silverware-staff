@@ -119,7 +119,6 @@ class StaffCategory extends Page implements ListSource
     private static $defaults = [
         'ListInherit' => 1,
         'ShowContent' => 0,
-        'MemberSummary' => 'MetaSummary',
         'HideFromMainMenu' => 1
     ];
     
