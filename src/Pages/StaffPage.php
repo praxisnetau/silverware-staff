@@ -17,10 +17,12 @@
 
 namespace SilverWare\Staff\Pages;
 
+use SilverStripe\Forms\DropdownField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
 use SilverWare\Extensions\Lists\ListViewExtension;
 use SilverWare\Extensions\Model\ImageDefaultsExtension;
+use SilverWare\Forms\FieldSection;
 use SilverWare\Lists\ListSource;
 use Page;
 
@@ -84,13 +86,24 @@ class StaffPage extends Page implements ListSource
     private static $default_child = StaffCategory::class;
     
     /**
+     * Maps field names to field types for this object.
+     *
+     * @var array
+     * @config
+     */
+    private static $db = [
+         'MemberSummary' => 'Varchar(16)'
+    ];
+    
+    /**
      * Defines the allowed children for this object.
      *
      * @var array|string
      * @config
      */
     private static $allowed_children = [
-        StaffCategory::class
+        StaffCategory::class,
+        StaffMember::class
     ];
     
     /**
@@ -115,13 +128,96 @@ class StaffPage extends Page implements ListSource
     ];
     
     /**
+     * Answers a list of field objects for the CMS interface.
+     *
+     * @return FieldList
+     */
+    public function getCMSFields()
+    {
+        // Obtain Field Objects (from parent):
+        
+        $fields = parent::getCMSFields();
+        
+        // Define Placeholder:
+        
+        $placeholder = _t(__CLASS__ . '.DROPDOWNDEFAULT', '(default)');
+        
+        // Create Options Tab:
+        
+        $fields->findOrMakeTab('Root.Options', $this->fieldLabel('Options'));
+        
+        // Create Options Fields:
+        
+        $fields->addFieldsToTab(
+            'Root.Options',
+            [
+                FieldSection::create(
+                    'StaffPageOptions',
+                    $this->fieldLabel('StaffPage'),
+                    [
+                        DropdownField::create(
+                            'MemberSummary',
+                            $this->fieldLabel('MemberSummary'),
+                            StaffCategory::singleton()->getMemberSummaryOptions()
+                        )->setEmptyString(' ')->setAttribute('data-placeholder', $placeholder)
+                    ]
+                )
+            ]
+        );
+        
+        // Answer Field Objects:
+        
+        return $fields;
+    }
+    
+    /**
+     * Answers the labels for the fields of the receiver.
+     *
+     * @param boolean $includerelations Include labels for relations.
+     *
+     * @return array
+     */
+    public function fieldLabels($includerelations = true)
+    {
+        // Obtain Field Labels (from parent):
+        
+        $labels = parent::fieldLabels($includerelations);
+        
+        // Define Field Labels:
+        
+        $labels['Options'] = _t(__CLASS__ . '.OPTIONS', 'Options');
+        $labels['StaffPage'] = _t(__CLASS__ . '.STAFFPAGE', 'Staff Page');
+        $labels['MemberSummary'] = _t(__CLASS__ . '.MEMBERSUMMARY', 'Member summary');
+        
+        // Answer Field Labels:
+        
+        return $labels;
+    }
+    
+    /**
      * Answers a list of members within the staff page.
      *
-     * @return DataList
+     * @return ArrayList
      */
     public function getMembers()
     {
-        return StaffMember::get()->filter('ParentID', $this->AllChildren()->column('ID') ?: null);
+        $members = ArrayList::create();
+        
+        $members->merge(StaffMember::get()->filter('ParentID', $this->AllChildren()->column('ID') ?: null));
+        
+        $members->merge($this->getChildMembers());
+        
+        return $members;
+    }
+    
+    /**
+     * Answers a list of the immediate child members of the staff page.
+     *
+     * @return DataList
+     */
+    public function getChildMembers()
+    {
+        return $this->AllChildren()->filter('ClassName', StaffMember::class);
     }
     
     /**
@@ -169,7 +265,24 @@ class StaffPage extends Page implements ListSource
     }
     
     /**
-     * Answers the member list component for the template.
+     * Answers the child member list component for the template.
+     *
+     * @return BaseListComponent
+     */
+    public function getChildMemberList()
+    {
+        $list = clone $this->getListComponent();
+        
+        $list->setSource($this->getChildMembers());
+        $list->setStyleIDFrom($this);
+        
+        return $list;
+    }
+    
+    /**
+     * Answers the member list component for the given staff category.
+     *
+     * @param StaffCategory $category
      *
      * @return BaseListComponent
      */
@@ -181,15 +294,5 @@ class StaffPage extends Page implements ListSource
         $list->setStyleIDFrom($this, $category->Title);
         
         return $list;
-    }
-    
-    /**
-     * Answers a message string to be shown when no data is available.
-     *
-     * @return string
-     */
-    public function getNoDataMessage()
-    {
-        return _t(__CLASS__ . '.NODATAAVAILABLE', 'No data available.');
     }
 }

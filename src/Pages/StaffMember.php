@@ -292,9 +292,9 @@ class StaffMember extends Page
      */
     public function getMetaSummary()
     {
-        if ($category = $this->getCategory()) {
+        if ($parent = $this->getParent()) {
             
-            if ($field = $category->MemberSummary) {
+            if ($field = $parent->MemberSummary) {
                 return $this->dbObject($field);
             }
             
